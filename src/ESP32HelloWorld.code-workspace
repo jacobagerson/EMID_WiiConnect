@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../Desktop/esp32-wroom/ESP32HelloWorld"
+		},
+		{
+			"name": "ESP_Connect",
+			"path": ".."
+		}
+	],
+	"settings": {}
+}
