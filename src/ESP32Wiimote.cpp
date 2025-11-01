@@ -197,16 +197,20 @@ int ESP32Wiimote::available(void)
     if (rd.data[0] != 0xA1) // no data input
         return 0;
     // for (int i = 0; i < rd.len; i++) {
-    //   Serial.print(i);
+    //   Serial.print(rd.data[i], HEX);
     //   Serial.print(", ");
-    //   Serial.print(rd.data[i]);
-    //   Serial.print(", ");
-    //   if (i < rd.len - 1) {
-    //     Serial.print("\n");
-    //   }
-      
+
     // }
+    // Serial.print(rd.data[0], HEX);
+    // Serial.print(", ");
+    // Serial.print(rd.data[1], HEX);
+    Serial.print("\n");
     // update old states
+
+    
+
+    //Ok, so structure of string rd is: 33 BB BB AA AA AA II II II II II II II II II II II II 
+
     _oldButtonState  = _buttonState;
     _oldAccelState   = _accelState;
     _oldNunchukState = _nunchukState;
