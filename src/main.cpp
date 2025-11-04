@@ -10,7 +10,7 @@ static int num_run = 0, num_updates = 0;
 void setup()
 {
     Serial.begin(115200);
-    Serial2.begin(9600, SERIAL_8N1, 16, 17); // RX=16, TX=17
+    //Serial2.begin(9600, SERIAL_8N1, 16, 17); // RX=16, TX=17
 
     
 
@@ -73,22 +73,22 @@ void loop()
     // Serial.print('\r');
     // for (int i = 0; i < 80; ++i) Serial.print(' ');
     // Serial.print('\r');
-            Serial.printf("button: %05x = ", (int)button);
-            Serial.print(ca);
-            Serial.print(cb);
-            Serial.print(cc);
-            Serial.print(cz);
-            Serial.print(c1);
-            Serial.print(c2);
-            Serial.print(cminus);
-            Serial.print(chome);
-            Serial.print(cplus);
-            Serial.print(cleft);
-            Serial.print(cright);
-            Serial.print(cup);
-            Serial.print(cdown);
-            Serial.printf(", wiimote.axis: %3d/%3d/%3d", accel.xAxis, accel.yAxis, accel.zAxis);
-            Serial.print("\n");
+            // Serial.printf("button: %05x = ", (int)button);
+            // Serial.print(ca);
+            // Serial.print(cb);
+            // Serial.print(cc);
+            // Serial.print(cz);
+            // Serial.print(c1);
+            // Serial.print(c2);
+            // Serial.print(cminus);
+            // Serial.print(chome);
+            // Serial.print(cplus);
+            // Serial.print(cleft);
+            // Serial.print(cright);
+            // Serial.print(cup);
+            // Serial.print(cdown);
+            // Serial.printf(", wiimote.axis: %3d/%3d/%3d", accel.xAxis, accel.yAxis, accel.zAxis);
+            // Serial.print("\n");
             // Serial.printf(", nunchuk.axis: %3d/%3d/%3d", nunchuk.xAxis, nunchuk.yAxis, nunchuk.zAxis);
             // Serial.printf(", nunchuk.stick: %3d/%3d\n", nunchuk.xStick, nunchuk.yStick);
         }

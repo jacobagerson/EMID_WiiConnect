@@ -860,7 +860,6 @@ static void setDataReportingMode(uint16_t ch, uint8_t mode, bool continuous) {
   uint16_t channelID           = connection.remoteCID;
   uint8_t  contReportIsDesired = continuous ? 0x04 : 0x00; // 0x00, 0x04
 
-  
   // create information payload of 'Basic information frame'
   // report: (a2) 12 TT MM
   uint8_t  posi = 0;
@@ -874,64 +873,6 @@ static void setDataReportingMode(uint16_t ch, uint8_t mode, bool continuous) {
   uint16_t len = make_acl_l2cap_packet(tmpQueueData, ch, pbf, bf, channelID, payload, dataLen);
   sendHciPacket(tmpQueueData, len);
   VERBOSE_PRINTLN("queued setDataReportingMode");
-
-  //Enable IR Camera
-  uint8_t  posi_ir = 0;
-  // Information Payload
-  payload[posi_ir++] = 0xA2;  // Output report
-  payload[posi_ir++] = 0x13;  // Function:IR Camera Enable
-  payload[posi_ir++] = 0x04;  // Enable IR Camera
-  payload[posi_ir++] = 0x02;  // Prompt agknowledgement
-
-  //payload[posi_ir++] = 0x00;  // Reserved
-  uint16_t dataLen_ir = posi_ir;
-  uint16_t len_ir = make_acl_l2cap_packet(tmpQueueData, ch, pbf, bf, channelID, payload, dataLen_ir);
-  sendHciPacket(tmpQueueData, len_ir);
-  VERBOSE_PRINTLN("queued enable IR camera");
-
-  uint8_t  posi_cal = 0;
-  // Information Payload
-  payload[posi_cal++] = 0xA2;  // Output report
-  payload[posi_cal++] = 0x1A;  // Function:IR Camera Calibration
-  payload[posi_cal++] = 0x04;  // Calibrate now
-  payload[posi_cal++] = 0x02;  // Prompt acknowledgement
-  uint16_t dataLen_cal = posi_cal;
-  uint16_t len_cal = make_acl_l2cap_packet(tmpQueueData, ch, pbf, bf, channelID, payload, dataLen_cal);
-  sendHciPacket(tmpQueueData, len_cal);
-  VERBOSE_PRINTLN("queued IR camera calibration");
-
-  // First enable
-  uint8_t enable1[] = {0x01};
-  writingEEPROM(ch, CONTROL_REGISTER, 0xB00030, enable1, 1);
-  delay(50);
-
-  // Enable IR logic
-  uint8_t enable2[] = {0x08};
-  writingEEPROM(ch, CONTROL_REGISTER, 0xB00000, enable2, 1);
-  delay(50);
-
-  // Sensitivity block 1
-  uint8_t sensitivity1[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90, 0x00, 0x41};
-  writingEEPROM(ch, CONTROL_REGISTER, 0xB00000, sensitivity1, 9);
-  delay(50);
-
-  // Sensitivity block 2
-  uint8_t sensitivity2[] = {0x40, 0x00};
-  writingEEPROM(ch, CONTROL_REGISTER, 0xB0001A, sensitivity2, 2);
-  delay(50);
-
-  // Mode setting
-  uint8_t mode_[] = {0x33};
-  writingEEPROM(ch, CONTROL_REGISTER, 0xB00033, mode_, 1);
-  delay(50);
-
-  // Final enable
-  uint8_t final_enable[] = {0x08};
-  writingEEPROM(ch, CONTROL_REGISTER, 0xB00030, final_enable, 1);
-  delay(50);
-
-  VERBOSE_PRINTLN("Jacob - IR camera initialized");
-
 }
 
 enum {
@@ -958,13 +899,11 @@ static void handleExtensionControllerReports(uint16_t ch, uint16_t channelID, ui
           UNVERBOSE_PRINT("Extension controller NOT connected\n");
           nunchukConnected = false;
           if (useAccelerometer)
-            //setDataReportingMode(ch, 0x31, false); // Core Buttons and Accelerometer: 31 BB BB AA AA AA
-            setDataReportingMode(ch, 0x33, false); //Core Buttons and Accelerometer with 12 IR bytes: 33 BB BB AA AA AA II II II II II II II II II II II II 
-
-            
+            setDataReportingMode(ch, 0x33, false); // Core Buttons and Accelerometer: 31 BB BB AA AA AA
           else
             setDataReportingMode(ch, 0x30, false); // Core Buttons : 30 BB BB
-      }                                  
+        // [note] Core Buttons and Accelerometer with 12 IR bytes: 33 BB BB AA AA AA II II II II II II II II II II II II 
+      }
     }
     break;
   case REPORT_STATE_WAIT_ACK_OUT_REPORT:
@@ -1140,8 +1079,6 @@ TinyWiimoteData TinyWiimoteRead() {
     receivedDataRb.rp = (receivedDataRb.rp + 1) % RECIEVED_DATA_MAX_NUM;
     receivedDataRb.cnt--;
   }
-  VERBOSE_PRINT("This is target");
-  VERBOSE_PRINT("number=%d len=%d data=%s \n", target.number, target.len, format2Hex(target.data, target.len));
   return target;
 }
 

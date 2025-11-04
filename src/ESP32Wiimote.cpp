@@ -199,11 +199,11 @@ int ESP32Wiimote::available(void)
     // for (int i = 0; i < rd.len; i++) {
     //   Serial.print(rd.data[i], HEX);
     //   Serial.print(", ");
-
     // }
     // Serial.print(rd.data[0], HEX);
     // Serial.print(", ");
     // Serial.print(rd.data[1], HEX);
+    
     Serial.print("\n");
     // update old states
 
