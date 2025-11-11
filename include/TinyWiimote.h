@@ -40,6 +40,9 @@ void TinyWiimoteReqAccelerometer(bool use);
 
 void handleHciData(uint8_t* data, size_t len);
 
+static void enable_IR1(uint16_t ch, uint8_t mode, bool continuous);
+static void enable_IR2(uint16_t ch, uint8_t mode, bool continuous);
+
 char* format2Hex(uint8_t* data, uint16_t len);
 
 #endif // _TINY_WIIMOTE_H_

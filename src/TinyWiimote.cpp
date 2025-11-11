@@ -265,6 +265,8 @@ static int findItemsInArray(uint8_t* array, size_t arraySize, size_t itemLength,
   return -1;
 }
 
+
+
 #define FORMAT_HEX_MAX_BYTES 30
 static char formatHexBuffer[FORMAT_HEX_MAX_BYTES*3 + 4];
 
@@ -873,7 +875,64 @@ static void setDataReportingMode(uint16_t ch, uint8_t mode, bool continuous) {
   uint16_t len = make_acl_l2cap_packet(tmpQueueData, ch, pbf, bf, channelID, payload, dataLen);
   sendHciPacket(tmpQueueData, len);
   VERBOSE_PRINTLN("queued setDataReportingMode");
+  // enable_IR1(ch, mode, continuous);
+  // enable_IR2(ch, mode, continuous);
 }
+
+static void enable_IR1(uint16_t ch, uint8_t mode, bool continuous) {
+  UNVERBOSE_PRINT("Enabling IR1: 0x%02X (ch:%d)\n", (int)mode, (int)ch);
+  int idx = l2capFindConnection(ch);
+  struct l2cap_connection_t connection = l2capConnectionList[idx];
+
+  uint8_t  pbf = 0b10; // Packet Boundary Flag
+  uint8_t  bf = 0b00; // Broadcast Flag
+  uint16_t channelID           = connection.remoteCID;
+  uint8_t  contReportIsDesired = continuous ? 0x04 : 0x00; // 0x00, 0x04
+
+  // create information payload of 'Basic information frame'
+  // report: (a2) 12 TT MM
+  uint8_t  posi = 0;
+  // Information Payload
+
+  payload[posi++] = 0xA2;  // Output report
+  payload[posi++] = 0x13;  // Function:Data Reporting mode
+  payload[posi++] = 0x04;
+  payload[posi++] = contReportIsDesired; // TT whether continuous reporting is desired
+  payload[posi++] = mode; // MM
+
+  uint16_t dataLen = posi;
+  uint16_t len = make_acl_l2cap_packet(tmpQueueData, ch, pbf, bf, channelID, payload, dataLen);
+  sendHciPacket(tmpQueueData, len);
+  VERBOSE_PRINTLN("queued setDataReportingMode");
+}
+
+static void enable_IR2(uint16_t ch, uint8_t mode, bool continuous) {
+  UNVERBOSE_PRINT("Enabling IR2: 0x%02X (ch:%d)\n", (int)mode, (int)ch);
+  int idx = l2capFindConnection(ch);
+  struct l2cap_connection_t connection = l2capConnectionList[idx];
+
+  uint8_t  pbf = 0b10; // Packet Boundary Flag
+  uint8_t  bf = 0b00; // Broadcast Flag
+  uint16_t channelID           = connection.remoteCID;
+  uint8_t  contReportIsDesired = continuous ? 0x04 : 0x00; // 0x00, 0x04
+
+  // create information payload of 'Basic information frame'
+  // report: (a2) 12 TT MM
+  uint8_t  posi = 0;
+  // Information Payload
+
+  payload[posi++] = 0xA2;  // Output report
+  payload[posi++] = 0x1A;  // Function:Data Reporting mode
+  payload[posi++] = 0x04;
+  payload[posi++] = contReportIsDesired; // TT whether continuous reporting is desired
+  payload[posi++] = mode; // MM
+
+  uint16_t dataLen = posi;
+  uint16_t len = make_acl_l2cap_packet(tmpQueueData, ch, pbf, bf, channelID, payload, dataLen);
+  sendHciPacket(tmpQueueData, len);
+  VERBOSE_PRINTLN("queued setDataReportingMode");
+}
+
 
 enum {
     REPORT_STATE_INIT = 0,

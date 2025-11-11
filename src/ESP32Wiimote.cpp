@@ -196,10 +196,10 @@ int ESP32Wiimote::available(void)
         return 0;
     if (rd.data[0] != 0xA1) // no data input
         return 0;
-    // for (int i = 0; i < rd.len; i++) {
-    //   Serial.print(rd.data[i], HEX);
-    //   Serial.print(", ");
-    // }
+    for (int i = 0; i < rd.len; i++) {
+      Serial.print(rd.data[i], HEX);
+      Serial.print(", ");
+    }
     // Serial.print(rd.data[0], HEX);
     // Serial.print(", ");
     // Serial.print(rd.data[1], HEX);
